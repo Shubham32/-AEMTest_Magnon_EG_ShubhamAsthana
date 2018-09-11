@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workspaceFilter version="1.0">
+    <filter root="/conf/egplus"/>
+    <filter root="/content/egplus"/>
+    <filter root="/content/dam/egplus"/>
+</workspaceFilter>
