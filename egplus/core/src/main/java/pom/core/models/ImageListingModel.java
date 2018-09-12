@@ -1,73 +1,103 @@
 package pom.core.models;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
-import javax.jcr.Session;
 
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
+import org.apache.sling.api.resource.ValueMap;
 import org.apache.sling.models.annotations.DefaultInjectionStrategy;
 import org.apache.sling.models.annotations.Model;
 
-import com.day.cq.search.PredicateGroup;
-import com.day.cq.search.Query;
-import com.day.cq.search.QueryBuilder;
-import com.day.cq.search.eval.PathPredicateEvaluator;
+import com.day.cq.commons.RangeIterator;
 import com.day.cq.tagging.TagManager;
 
 import pom.core.beans.ImageBean;
 
+/**
+ * The Class ImageListingModel.
+ */
 @Model(adaptables = Resource.class, defaultInjectionStrategy = DefaultInjectionStrategy.OPTIONAL)
 public class ImageListingModel {
 
+	/** The Constant DAM_ROOT_PATH. */
 	private static final String DAM_ROOT_PATH = "/content/dam";
-	
+
+	/** The tag searched. */
 	@Inject
 	private static String[] tagSearched;
 
+	/** The search for all tags. */
 	@Inject
 	private String searchForAllTags;
-	
+
+	/** The resolver. */
 	@Inject
 	private ResourceResolver resolver;
 
+	/**
+	 * Gets the image listing.
+	 *
+	 * @return the image listing
+	 */
 	public List<ImageBean> getImageListing() {
 		List<ImageBean> imageList = new ArrayList<>();
 		TagManager tagManager = resolver.adaptTo(TagManager.class);
-		tagManager.find(DAM_ROOT_PATH, tagSearched);
+		boolean shouldSearchForAllTags = Boolean.parseBoolean(searchForAllTags);
+		RangeIterator<Resource> imageResources = null;
+		if (shouldSearchForAllTags) {
+			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, shouldSearchForAllTags);
+		} else {
+			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, !shouldSearchForAllTags);
+		}
+		ImageBean bean;
+		if (null != imageResources) {
+			while (imageResources.hasNext()) {
+				bean = new ImageBean();
+				Resource imageRes = imageResources.next();
+				if (null != imageRes) {
+					ValueMap imgVMap = imageRes.getValueMap();
+					if (null != imgVMap && imgVMap.containsKey("jcr:primaryType")) {
+						String assetType = (String) imgVMap.get("jcr:primaryType");
+						if (assetType.equals("dam:AssetContent") && imgVMap.containsKey("jcr:lastModified")) {
+							long currentTimestamp = System.currentTimeMillis();
+							long difference = Math.abs(
+									currentTimestamp - getDateFromValueMap(imgVMap.get("jcr:lastModified")).getTime());
+							if (difference > 1000 * 60 * 60 * 24 * 5) {
+								bean.setImageUrl(imageRes.getParent().getPath());
+								ValueMap metaVMap = imageRes.getChild("metadata").getValueMap();
+								if (null != metaVMap && metaVMap.containsKey("dc:title")) {
+									String title = (String) metaVMap.get("metaVMap");
+									bean.setImageTitle(title);
+									bean.setImageAltText(title);
+								}
+								imageList.add(bean);
+							}
+						}
+					}
+				}
+			}
+		}
 		return imageList;
 	}
-	
-	/**
-	 * Find all pdp resources.
-	 *
-	 * @param resolver
-	 *            the resolver
-	 * @param contentPath
-	 *            the content path
-	 * @return the iterator
-	 */
-	private static Iterator<Resource> findAllImages(ResourceResolver resolver, String contentPath) {
-		Iterator<Resource> resultIterator = null;
-		Map<String, String> params = new HashMap<>();
-		params.put(PathPredicateEvaluator.PATH, contentPath);
-		params.put("1_property", "@jcr:content/jcr:primaryType");
-		params.put("1_property.value", "dam:AssetContent");
-		params.put("2_property", "@jcr:content/metadata/cq:tags");
-		params.put("1_property.value", tagSearched);
-		params.put("property.operation", "AND");
-		params.put("p.limit", "-1");
-		QueryBuilder queryBuilder = resolver.adaptTo(QueryBuilder.class);
-		if (queryBuilder != null) {
-			Query query = queryBuilder.createQuery(PredicateGroup.create(params), resolver.adaptTo(Session.class));
-			resultIterator = query.getResult().getResources();
-		}
-		return resultIterator;
-	}
 
+	/**
+	 * Gets the date from value map.
+	 *
+	 * @param key
+	 *            the key
+	 * @return the date from value map
+	 */
+	private static Date getDateFromValueMap(Object key) {
+		Date date = null;
+		GregorianCalendar newGregCal = (GregorianCalendar) key;
+		if (null != newGregCal) {
+			date = newGregCal.getTime();
+		}
+		return date;
+	}
 }
