@@ -12,7 +12,7 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="egplus Default"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/egplus/components/content/egFlickrListing/v1/egFlickrListing,/apps/egplus/components/content/imageListing/v1/imageListing]"
+                        components="[/apps/egplus/components/content/imageListing/v1/imageListing,/apps/egplus/components/content/egFlickrListing/v1/egFlickrListing]"
                         policyResourceType="wcm/foundation/components/responsivegrid">
                     </content-default>
                 </responsivegrid>
