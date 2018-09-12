@@ -16,22 +16,15 @@
                         jcr:primaryType="nt:unstructured"
                         sling:resourceType="granite/ui/components/coral/foundation/container">
                         <items jcr:primaryType="nt:unstructured">
-                            <tagSearched
+                            <flickerTags
                                 jcr:primaryType="nt:unstructured"
                                 sling:resourceType="cq/gui/components/common/tagspicker"
                                 allowBulkEdit="{Boolean}true"
-                                fieldLabel="Tags to be searched"
-                                fieldDescription="Select the tags for which the image should be serched."
-                                name="./tagSearched"
+                                fieldLabel="Flickr Tags to be searched"
+                                fieldDescription="Select the flickr  for which the image should be serched."
+                                name="./flickerTags"
                                 required="{Boolean}true"
                                 rootPath="/etc/tags"/>
-							<searchForAllTags
-                                jcr:primaryType="nt:unstructured"
-                                sling:resourceType="granite/ui/components/foundation/form/checkbox"
-                                name="./searchForAllTags"
-                                text="Should search for images with all the tags?"
-                                uncheckedValue="false"
-                                value="true"/>
                         </items>
                     </column>
                 </items>

@@ -50,26 +50,25 @@ public class ImageListingModel {
 		boolean shouldSearchForAllTags = Boolean.parseBoolean(searchForAllTags);
 		RangeIterator<Resource> imageResources = null;
 		if (shouldSearchForAllTags) {
-			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, shouldSearchForAllTags);
-		} else {
 			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, !shouldSearchForAllTags);
+		} else {
+			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, shouldSearchForAllTags);
 		}
-		ImageBean bean;
 		if (null != imageResources) {
 			while (imageResources.hasNext()) {
-				bean = new ImageBean();
 				Resource imageRes = imageResources.next();
 				if (null != imageRes) {
-					ValueMap imgVMap = imageRes.getValueMap();
+					ValueMap imgVMap = imageRes.getParent().getValueMap();
 					if (null != imgVMap && imgVMap.containsKey("jcr:primaryType")) {
 						String assetType = (String) imgVMap.get("jcr:primaryType");
 						if (assetType.equals("dam:AssetContent") && imgVMap.containsKey("jcr:lastModified")) {
 							long currentTimestamp = System.currentTimeMillis();
 							long difference = Math.abs(
 									currentTimestamp - getDateFromValueMap(imgVMap.get("jcr:lastModified")).getTime());
-							if (difference > 1000 * 60 * 60 * 24 * 5) {
-								bean.setImageUrl(imageRes.getParent().getPath());
-								ValueMap metaVMap = imageRes.getChild("metadata").getValueMap();
+							if (difference < 1000 * 60 * 60 * 24 * 5) {
+								ImageBean bean = new ImageBean();
+								bean.setImageUrl(imageRes.getParent().getParent().getPath());
+								ValueMap metaVMap = imageRes.getValueMap();
 								if (null != metaVMap && metaVMap.containsKey("dc:title")) {
 									String title = (String) metaVMap.get("metaVMap");
 									bean.setImageTitle(title);

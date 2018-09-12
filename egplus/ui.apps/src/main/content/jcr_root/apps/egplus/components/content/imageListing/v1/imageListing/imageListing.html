@@ -1,8 +1,11 @@
+<sly data-sly-test="${wcmmode.edit && !wcmmode.preview}" class="aem-helper">
+     Edit Image Listing
+</sly>
 <sly data-sly-use.imageListObj="pom.core.models.ImageListingModel">
 	<sly data-sly-list.imgList="${imageListObj.imageListing}">
 		ImageTitle:: ${imgList.imageTitle}<br/>
 		ImageAlt:: ${imgList.imageAltText}<br/>
-		ImagePath:: ${imgListbr.imageUrl}/>
+		ImagePath:: ${imgList.imageUrl}<br/>
 		####################  <br/>
 	</sly>
 </sly>

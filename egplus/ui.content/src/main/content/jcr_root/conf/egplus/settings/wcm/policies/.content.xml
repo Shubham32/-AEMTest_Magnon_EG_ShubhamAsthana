@@ -12,40 +12,11 @@
                         jcr:primaryType="nt:unstructured"
                         jcr:title="egplus Default"
                         sling:resourceType="wcm/core/components/policy/policy"
-                        components="[group:egplus,/apps/egplus/components/form/container]"
+                        components="[/apps/egplus/components/content/egFlickrListing/v1/egFlickrListing,/apps/egplus/components/content/imageListing/v1/imageListing]"
                         policyResourceType="wcm/foundation/components/responsivegrid">
-                        <cq:authoring jcr:primaryType="nt:unstructured">
-                            <assetToComponentMapping jcr:primaryType="nt:unstructured">
-                                <image
-                                    jcr:primaryType="nt:unstructured"
-                                    assetGroup="media"
-                                    assetMimetype="image/*"
-                                    droptarget="image"
-                                    resourceType="egplus/components/content/image"
-                                    type="Images"/>
-                            </assetToComponentMapping>
-                        </cq:authoring>
-                        <jcr:content
-                            jcr:primaryType="nt:unstructured"
-                            mergeList="{Boolean}true"/>
                     </content-default>
                 </responsivegrid>
             </components>
         </foundation>
     </wcm>
-    <egplus jcr:primaryType="nt:unstructured">
-        <components jcr:primaryType="nt:unstructured">
-            <form jcr:primaryType="nt:unstructured">
-                <container jcr:primaryType="nt:unstructured">
-                    <form-container
-                        jcr:primaryType="nt:unstructured"
-                        jcr:title="egplus Form"
-                        sling:resourceType="wcm/core/components/policy/policy"
-                        components="[/apps/egplus/components/form/button,/apps/egplus/components/form/hidden,/apps/egplus/components/form/options,/apps/egplus/components/form/text]">
-                        <jcr:content jcr:primaryType="nt:unstructured"/>
-                    </form-container>
-                </container>
-            </form>
-        </components>
-    </egplus>
 </jcr:root>
