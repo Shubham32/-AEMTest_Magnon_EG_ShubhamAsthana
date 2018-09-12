@@ -1,3 +1,8 @@
 <sly data-sly-test="${wcmmode.edit && !wcmmode.preview}" class="aem-helper">
      Edit EG Flickr Listing
 </sly>
+<sly data-sly-use.imageListObj="pom.core.models.FlickrListingModel">
+	<sly data-sly-list.imgList="${imageListObj.imageList}">
+		ImagePath:: ${imgList.imageUrl}<br/>
+	</sly>
+</sly>
