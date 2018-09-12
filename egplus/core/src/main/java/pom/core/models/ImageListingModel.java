@@ -49,11 +49,7 @@ public class ImageListingModel {
 		TagManager tagManager = resolver.adaptTo(TagManager.class);
 		boolean shouldSearchForAllTags = Boolean.parseBoolean(searchForAllTags);
 		RangeIterator<Resource> imageResources = null;
-		if (shouldSearchForAllTags) {
-			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, !shouldSearchForAllTags);
-		} else {
-			imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, shouldSearchForAllTags);
-		}
+		imageResources = tagManager.find(DAM_ROOT_PATH, tagSearched, !shouldSearchForAllTags);
 		if (null != imageResources) {
 			while (imageResources.hasNext()) {
 				Resource imageRes = imageResources.next();
